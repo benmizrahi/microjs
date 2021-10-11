@@ -3,7 +3,7 @@
     "declaration": true,
     "importHelpers": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "strict": true,
     "noImplicitAny": false,
     "noImplicitUseStrict": false,
@@ -15,5 +15,6 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src"]
 }

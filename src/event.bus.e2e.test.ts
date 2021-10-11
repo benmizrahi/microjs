@@ -26,7 +26,6 @@ describe('Spec =>  testing event.bus functionality ', () => {
     after(async () => {
         await EventBus.shutDown();
     })
-
     it("should test reactiveAttach method gets activated on event passed", async () => {
         await EventBus.reactiveAttach({
             service: 't1_local',
@@ -49,6 +48,4 @@ describe('Spec =>  testing event.bus functionality ', () => {
         const results = await EventBus.getAsync('service_a', EVENT_TO_LISTEN_TO, { message: 'PING' }) //demonstrate service B calling service A
         expect(results.message).to.be.equal("PONG")
     })
-
-
 });
