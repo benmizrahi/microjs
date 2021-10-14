@@ -51,8 +51,8 @@ export class KafkaQueue implements IQueue {
   attach = async (params: IBusReactiveParams) => {
 
     let topic = `${params.action.toUpperCase()}`;
-    if (params.service) {
-      topic = `${params.service.toUpperCase()}_${topic}`
+    if (params.domain) {
+      topic = `${params.domain.toUpperCase()}_${topic}`
     }
     try {
       //first create the topic

@@ -28,7 +28,7 @@ describe('Spec =>  testing event.bus functionality ', () => {
     })
     it("should test reactiveAttach method gets activated on event passed", async () => {
         await EventBus.reactiveAttach({
-            service: 't1_local',
+            domain: 't1_local',
             action: EVENT_TO_LISTEN_TO, cb: (v) => {
                 expect(v.message).to.be.equal('PONG') //check that PONG received 
             }
@@ -38,7 +38,7 @@ describe('Spec =>  testing event.bus functionality ', () => {
 
     it("should be register to event, publish and get results back", async () => {
         await EventBus.reactiveAttach({
-            service: 'service_a', //demonstrate service A listener 
+            domain: 'service_a', //demonstrate service A listener 
             action: EVENT_TO_LISTEN_TO, cb: (v) => {
                 expect(v.message).to.be.equal("PING")
                 return { message: "PONG" }

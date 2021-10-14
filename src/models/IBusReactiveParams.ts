@@ -1,5 +1,5 @@
 export interface IBusReactiveParams {
-  service?: string,
+  domain?: string,
   action: string,
   fromBeginningConsumer?: boolean,
   resetToLatest?: boolean;

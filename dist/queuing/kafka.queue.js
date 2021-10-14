@@ -44,8 +44,8 @@ class KafkaQueue {
         });
         this.attach = (params) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             let topic = `${params.action.toUpperCase()}`;
-            if (params.service) {
-                topic = `${params.service.toUpperCase()}_${topic}`;
+            if (params.domain) {
+                topic = `${params.domain.toUpperCase()}_${topic}`;
             }
             try {
                 //first create the topic
