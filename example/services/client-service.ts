@@ -1,4 +1,4 @@
-import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
+import { EventBus, ActionReact, IEventBusMessage } from '../services/../../src/index'
 import * as readline from 'readline'
 import { promisify } from 'util'
 (async () => {
@@ -6,8 +6,7 @@ import { promisify } from 'util'
     //init the event bus (connection to redis/kafka)
     await EventBus.init()
 
-    
-
+ 
     //********************************************/
     ///client interface 
     const rl = readline.createInterface({
