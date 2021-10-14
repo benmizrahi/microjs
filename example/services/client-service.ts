@@ -1,4 +1,4 @@
-import { EventBus, ActionReact, IEventBusMessage } from '../services/../../src/index'
+import { EventBus } from '../../src/index'
 import * as readline from 'readline'
 import { promisify } from 'util'
 (async () => {

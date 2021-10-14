@@ -1,4 +1,4 @@
-import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
+import { EventBus, ActionReact, IEventBusMessage } from '../../src/index'
 (async () => {
     //init the event bus (connection to redis/kafka)
     await EventBus.init()
@@ -10,7 +10,7 @@ import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
          * Totally async operation - when order submitted store the message in cache
          * @param message : { payload } : { userId, name, date }
          */
-        @ActionReact({ action: 'submitted', service: 'orders' })
+        @ActionReact({ action: 'submitted', domain: 'orders' })
         submitted = (message: IEventBusMessage) => {
             const { userId, name, date } = message.payload;
             console.log(`stated handling order ${name}`)
@@ -23,7 +23,7 @@ import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
          * @param message : { payload }: { filters: { userId } }
          * returns Array<{ name, date}>
          */
-        @ActionReact({ action: 'get', service: 'orders' })
+        @ActionReact({ action: 'get', domain: 'orders' })
         get = (message: IEventBusMessage) => {
             const { filters }: { filters: { userId } } = message.payload;
             return this.inMemoryCache[filters.userId];
