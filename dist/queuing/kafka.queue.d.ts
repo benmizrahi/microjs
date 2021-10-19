@@ -1,3 +1,4 @@
+import { Kafka } from 'kafkajs';
 import { ICaching } from '../caching/caching.factory';
 import { IBusReactiveParams } from '../models/IBusReactiveParams';
 import { IQueue } from './queuing.factory';
@@ -9,8 +10,8 @@ export declare class KafkaQueue implements IQueue {
     private DEFAULT_REPLICATION_FACTOR;
     private DLQ_COUNT_RETRY;
     private listenTopicHandlers;
-    private kafka;
-    private admin;
+    kafka: Kafka;
+    admin: import("kafkajs").Admin;
     private fromBeginningConsumer;
     private producer;
     constructor(caching: ICaching);

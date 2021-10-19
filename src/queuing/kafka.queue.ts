@@ -13,7 +13,7 @@ export class KafkaQueue implements IQueue {
   private DEFAULT_REPLICATION_FACTOR = 3;
   private DLQ_COUNT_RETRY = +(process.env.RETRY_DLQ_COUNT as string) || 3
   private listenTopicHandlers = {}
-  private kafka = new Kafka({
+  kafka = new Kafka({
     clientId: 'api',
     brokers: [process.env.KAFKA_BROKER as string],
     connectionTimeout: +(process.env.EVENT_BUS_CONNECTION_TIMEOUT as string) || 30000,
@@ -27,11 +27,13 @@ export class KafkaQueue implements IQueue {
     logLevel: logLevel.ERROR
   });
 
-  private admin = this.kafka.admin({})
+  admin = this.kafka.admin({})
   private fromBeginningConsumer = process.env.FROM_BEGINNING == "1" ? true : false
   private producer = this.kafka.producer();
 
-  constructor(private readonly caching: ICaching) { }
+  constructor(private readonly caching: ICaching) { 
+    if(!process.env.KAFKA_GROUP) throw 'KAFKA_GROUP is mandatory parameter'
+  }
 
   registerSchema = async (schemas: string[]) => {
     await Promise.all(schemas.map(async (schema) => {

@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { after } from "mocha";
 
 const EVENT_TO_LISTEN_TO = "PING";
-describe('Spec =>  testing event.bus functionality ', () => {
+describe.skip('Spec =>  testing event.bus functionality ', () => {
 
     before(async () => {
         const stringSchema = [`{

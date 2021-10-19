@@ -5,7 +5,7 @@ const event_bus_1 = require("./event.bus");
 const chai_1 = require("chai");
 const mocha_1 = require("mocha");
 const EVENT_TO_LISTEN_TO = "PING";
-describe('Spec =>  testing event.bus functionality ', () => {
+describe.skip('Spec =>  testing event.bus functionality ', () => {
     before(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
         const stringSchema = [`{
           "type": "record",

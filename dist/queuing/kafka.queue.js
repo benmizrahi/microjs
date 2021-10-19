@@ -187,6 +187,8 @@ class KafkaQueue {
                 }
             }), Promise.resolve(true));
         });
+        if (!process.env.KAFKA_GROUP)
+            throw 'KAFKA_GROUP is mandatory parameter';
     }
     shutdown() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
