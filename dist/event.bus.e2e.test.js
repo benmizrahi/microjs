@@ -6,22 +6,6 @@ const chai_1 = require("chai");
 const mocha_1 = require("mocha");
 const EVENT_TO_LISTEN_TO = "PING";
 describe.skip('Spec =>  testing event.bus functionality ', () => {
-    before(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
-        const stringSchema = [`{
-          "type": "record",
-          "name": "PING",
-          "namespace": "t1_local",
-          "fields": [{ "type": "string", "name": "message" }]
-        }`,
-            `{
-            "type": "record",
-            "name": "PONG",
-            "namespace": "t1_local",
-            "fields": [{ "type": "string", "name": "message" }]
-          }`];
-        // await EventBus.registerSchemas(null, stringSchema)
-        // await EventBus.generateServiceSchema(['t1_local.PONG','t1_local.PING'],__dirname)
-    }));
     (0, mocha_1.after)(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
         yield event_bus_1.EventBus.shutDown();
     }));

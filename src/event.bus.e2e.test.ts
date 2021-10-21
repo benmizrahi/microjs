@@ -5,27 +5,10 @@ import { after } from "mocha";
 const EVENT_TO_LISTEN_TO = "PING";
 describe.skip('Spec =>  testing event.bus functionality ', () => {
 
-    before(async () => {
-        const stringSchema = [`{
-          "type": "record",
-          "name": "PING",
-          "namespace": "t1_local",
-          "fields": [{ "type": "string", "name": "message" }]
-        }`,
-            `{
-            "type": "record",
-            "name": "PONG",
-            "namespace": "t1_local",
-            "fields": [{ "type": "string", "name": "message" }]
-          }`]
-
-        // await EventBus.registerSchemas(null, stringSchema)
-        // await EventBus.generateServiceSchema(['t1_local.PONG','t1_local.PING'],__dirname)
-    })
-
     after(async () => {
         await EventBus.shutDown();
     })
+    
     it("should test reactiveAttach method gets activated on event passed", async () => {
         await EventBus.reactiveAttach({
             domain: 't1_local',
