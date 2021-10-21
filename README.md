@@ -36,7 +36,7 @@ After having the package installed under you're project - you should define some
 |---------|-------|-----------| ------ |
 | KAFKA_SERVICE_NAME | null | TRUE | the service name used in Kafka to create the consumer group and topics pattern
 | KAFKA_GROUP | null | TRUE | the consumer group to use for this consuming messages from Kafka 
-| KAFKA_BROKER | null | FALSE | Kafka brokers list 
+| KAFKA_BROKER | null | TRUE | Kafka brokers list 
 | EVENT_BUS_CONNECTION_TIMEOUT| 30000 | FALSE | connectionTimeout (KafkaJs)
 | EVENT_BUS_REQUEST_TIMEOUT| 30000 | FALSE | requestTimeout (KafkaJs)
 | EVENT_BUS_TIME| 300 | FALSE | initialRetryTime (KafkaJs)
