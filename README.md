@@ -195,6 +195,7 @@ submitted = (message: IEventBusMessage) => {
 
 If you'd like to contribute, check out the  [contributing guide](https://github.com/benmizrahi/microjs/CONTRIBUTING.md).
 
+
 ## License
 
 This repository is licensed under the " Apache-2.0 License". See  [LICENSE](https://github.com/benmizrahi/microjs/LICENSE).
