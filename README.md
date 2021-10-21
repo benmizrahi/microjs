@@ -1,20 +1,22 @@
 # MicroJs  :electric_plug: :desktop_computer:
 
-### Event Bus implementation for NodeJs microservices made with 	:heart_on_fire: :brain: :computer:
+### Event Bus implementation for NodeJs microservices made with :heart_on_fire: :brain: :computer:
 
-A microservices event bus for async/sync communication between NodeJs services - well tested in production grade handles millions of events per second  - in stream/batch mode.
+A micro-services event bus for async/sync communication between NodeJs services - well tested in production grade handles millions of events per second  - in stream/batch mode.
 ##### dependencies: [KafkaJs](https://github.com/tulios/kafkajs/), [Redis](https://github.com/redis/node-redis/)
 
 ## How it works ?
 
-Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, there are two directions that services can communicate - *one-way* OR *two-way* connection, let's explore both of them with examples. all communication directions are *async* non-blocking. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple. To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/README.md) under the example folder.
+Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, it provides a simple yet powerful abstraction over those tools - instead of implementing the layer of communication in every service - Microjs wraps it for you. with Microjs there are two ways that services can communicate - *one-way* (publisher) OR *two-way* (publish-respond). All communication directions are *async non-blocking*. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple.  
+
+To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/README.md) under the example folder.
 
 
-#### How two-way communication works:
+#### How two-way communication works - simple but powerful:
+
 When using the **EventBus.getAsync** method on the event bus we need somehow not only to populate the message into the relevant topic but we need also to get the respond back  and resolve the promise - to do so MicroJs uses Redis for publish-subscribe pattern. here you can see the the event-flow under the hood:
 
 ![alt text](https://github.com/benmizrahi/microjs/blob/main/diagram-sync-responed.png)
-
 
 ## Getting Started
 
