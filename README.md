@@ -155,10 +155,21 @@ For example the following method wraps the submitted method and binds in to the 
 ```
 import { EventBus, ActionReact, IEventBusMessage } from  '@microjs/packages'
 
+//single action per message in the topic
 @ActionReact({ action: 'submitted', domain: 'orders' })
 submitted = (message: IEventBusMessage) => {
 	const { message } = message.payload
 	console.log(message) // only handles the message no return value
+}
+
+//handle batch of messages in the topic
+@ActionReact({ action: 'submitted', domain: 'orders', isBatch: true })
+submitted = (messages: IEventBusMessage[],heartbeat , isRunning, isStale, resolveOffset) => {
+	for (const message in messages) {
+	  const { message } = message.payload
+	  console.log(message) // only handles the message no return value
+	  resolveOffset(message.technicalOffset); //commit the message to kafka
+	}
 }
 
 @ActionReact({ action: 'get', domain: 'orders' })
@@ -166,7 +177,6 @@ submitted = (message: IEventBusMessage) => {
 	const { message } = message.payload
 	return 'message + get'  // will be the result of the request via asyncGet
 }
-
 ```
 
 ## Contributing :handshake:
