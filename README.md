@@ -2,7 +2,7 @@
 
 ### Event Bus implementation for NodeJs microservices made with :heart_on_fire: :brain: :computer:
 
-A micro-services event bus for async/sync communication between NodeJs services - well tested in production grade handles millions of events per second  - in stream/batch mode.
+A micro-services event bus for async/sync communication between NodeJs services - well tested in production - handles millions of events per second  - in stream/batch mode.
 ##### dependencies: [KafkaJs](https://github.com/tulios/kafkajs/), [Redis](https://github.com/redis/node-redis/)
 
 ## How it works ?
