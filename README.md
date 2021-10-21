@@ -129,8 +129,6 @@ interface IBusReactiveParams {
 	messageFormat?: MessageFormat;
 }
 
-
-
 export interface IEventBusMessage {
 
   //UUID of this message - alow you to create an idempotent action to resolve duplications and issues. 
@@ -150,6 +148,19 @@ export interface IEventBusMessage {
 }
 ```
 
+In case the flag isBatch == true then the event bus will pass multiple extended methods that will help you doing processing the data coming in and make sure the consumer is stable - 
+
+```
+messages: IEventBusMessage[] - the actual batch of data
+
+heartbeat() - use await heartbeat() to make kafka know that the consumer is still alive - useful in case of have an intensive work to do on the batch (foreach/map) operation, in this case make sure you call await heartbeat() on each interval.
+
+isRunning() - checks whether the consumer instance is still running - it's important to check that because we won't be able to commit the offset if the consumer is not running
+
+resolveOffset() - will resolve the message in Kafka for this consumer group, execute this method when processing done only - to avoid data loss.
+```
+
+
 For example the following method wraps the submitted method and binds in to the action: **submitted** on the **orders** domain.
 
 ```
@@ -168,7 +179,8 @@ submitted = (messages: IEventBusMessage[],heartbeat , isRunning, isStale, resolv
 	for (const message in messages) {
 	  const { message } = message.payload
 	  console.log(message) // only handles the message no return value
-	  resolveOffset(message.technicalOffset); //commit the message to kafka
+	  resolveOffset(message.technicalOffset); //commit the message to Kafka
+	  await heartbeat();
 	}
 }
 
