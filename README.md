@@ -197,4 +197,4 @@ If you'd like to contribute, check out the  [contributing guide](https://github.
 
 ## License
 
-This repository is licensed under the "MIT" license. See  [LICENSE](https://github.com/benmizrahi/microjs/LICENSE).
+This repository is licensed under the " Apache-2.0 License". See  [LICENSE](https://github.com/benmizrahi/microjs/LICENSE).
