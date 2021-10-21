@@ -12,15 +12,15 @@ describe.skip('Spec =>  testing event.bus functionality ', () => {
           "namespace": "t1_local",
           "fields": [{ "type": "string", "name": "message" }]
         }`,
-        `{
+            `{
             "type": "record",
             "name": "PONG",
             "namespace": "t1_local",
             "fields": [{ "type": "string", "name": "message" }]
           }`]
 
-        await EventBus.registerSchemas(null, stringSchema)
-        await EventBus.generateServiceSchema(['t1_local.PONG','t1_local.PING'],__dirname)
+        // await EventBus.registerSchemas(null, stringSchema)
+        // await EventBus.generateServiceSchema(['t1_local.PONG','t1_local.PING'],__dirname)
     })
 
     after(async () => {
@@ -33,7 +33,7 @@ describe.skip('Spec =>  testing event.bus functionality ', () => {
                 expect(v.message).to.be.equal('PONG') //check that PONG received 
             }
         });
-        await EventBus.publishAsync('t1_local', EVENT_TO_LISTEN_TO, { message: 'PONG' }) //publish PING message 
+        await EventBus.publishAsync('t1_local', { payload: { message: 'PONG' } }, EVENT_TO_LISTEN_TO) //publish PING message 
     })
 
     it("should be register to event, publish and get results back", async () => {
@@ -45,7 +45,7 @@ describe.skip('Spec =>  testing event.bus functionality ', () => {
             }
         });
 
-        const results = await EventBus.getAsync('service_a', EVENT_TO_LISTEN_TO, { message: 'PING' }) //demonstrate service B calling service A
+        const results = await EventBus.getAsync('service_a', EVENT_TO_LISTEN_TO, { payload: { message: 'PING' } }) //demonstrate service B calling service A
         expect(results.message).to.be.equal("PONG")
     })
 });

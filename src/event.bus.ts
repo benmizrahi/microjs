@@ -24,7 +24,7 @@ class EventBusHandler {
     return this;
   }
 
-  registerSchemas = async (filePath, stringSchemas?: string[]) => {
+  private registerSchemas = async (filePath, stringSchemas?: string[]) => {
     if (filePath) {
       const readFile = promisify(fs.readFile);
       const file = await readFile(filePath)
@@ -34,7 +34,7 @@ class EventBusHandler {
     await this.queue.registerSchema(stringSchemas);
   }
 
-  generateServiceSchema = async (services, path) => {
+  private  generateServiceSchema = async (services, path) => {
     const result = await this.queue.generateSchemas(services);
     const writeFile = promisify(fs.writeFile);
     await writeFile('external.services.json', JSON.stringify(result))
@@ -45,12 +45,12 @@ class EventBusHandler {
     await this.queue.attach(params)
   }
 
-  publishAsync = async (action: string, obj: {}, toService?): Promise<boolean> => {
+  publishAsync = async (action: string, obj: { payload: any }, toDomain?): Promise<boolean> => {
     if (this.dryRun) return true
-    return await this.queue.publish(action, this.uuidv4(), obj, toService)
+    return await this.queue.publish(action, this.uuidv4(), obj, toDomain)
   }
 
-  bulkPublishAsync = async (action: string, messages: {}[], toService?): Promise<boolean> => {
+  bulkPublishAsync = async (action: string, messages: { payload: any }[], toDomain?): Promise<boolean> => {
     if (this.dryRun) return true
     const formattedMessages = messages.map((message) => {
       return {
@@ -58,10 +58,10 @@ class EventBusHandler {
         value: Buffer.from(JSON.stringify(message))
       }
     })
-    return await this.queue.bulkPublish(action, formattedMessages, toService)
+    return await this.queue.bulkPublish(action, formattedMessages, toDomain)
   }
 
-  getAsync = async (formService, action: string, obj: {}): Promise<any> => {
+  getAsync = async (formDomain, action: string, obj: { payload: any }): Promise<any> => {
     if (this.dryRun) return
     return new Promise(async (resolve, reject) => {
       const key = this.uuidv4(); //message key;
@@ -69,7 +69,7 @@ class EventBusHandler {
       this.caching.registerOnChange(`service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, (value) => { //mark to be deleted!
         resolve(value);
       })
-      await this.queue.publish(action, `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, obj, formService); //publish message to the queue
+      await this.queue.publish(action, `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, obj, formDomain); //publish message to the queue
     })
   }
 

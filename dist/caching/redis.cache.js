@@ -9,13 +9,13 @@ class RedisCache {
         this.pub_redis = (0, redis_1.createClient)({
             socket: {
                 host: (process.env.REDIS_HOST || 'localhost'),
-                port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6380),
+                port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
             },
         });
         this.sub_redis = (0, redis_1.createClient)({
             socket: {
                 host: (process.env.REDIS_HOST || 'localhost'),
-                port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6380),
+                port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
             }
         });
         this.init = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {

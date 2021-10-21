@@ -7,14 +7,14 @@ export class RedisCache implements ICaching {
   private readonly pub_redis = createClient({
     socket: {
       host: (process.env.REDIS_HOST || 'localhost'),
-      port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6380),
+      port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
     },
   })
 
   private readonly sub_redis = createClient({
     socket: {
       host: (process.env.REDIS_HOST || 'localhost'),
-      port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6380),
+      port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
     }
   })
 

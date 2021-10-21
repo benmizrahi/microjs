@@ -32,12 +32,12 @@ class EventBusHandler {
                 return;
             yield this.queue.attach(params);
         });
-        this.publishAsync = (action, obj, toService) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        this.publishAsync = (action, obj, toDomain) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             if (this.dryRun)
                 return true;
-            return yield this.queue.publish(action, this.uuidv4(), obj, toService);
+            return yield this.queue.publish(action, this.uuidv4(), obj, toDomain);
         });
-        this.bulkPublishAsync = (action, messages, toService) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        this.bulkPublishAsync = (action, messages, toDomain) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             if (this.dryRun)
                 return true;
             const formattedMessages = messages.map((message) => {
@@ -46,9 +46,9 @@ class EventBusHandler {
                     value: Buffer.from(JSON.stringify(message))
                 };
             });
-            return yield this.queue.bulkPublish(action, formattedMessages, toService);
+            return yield this.queue.bulkPublish(action, formattedMessages, toDomain);
         });
-        this.getAsync = (formService, action, obj) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        this.getAsync = (formDomain, action, obj) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             if (this.dryRun)
                 return;
             return new Promise((resolve, reject) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
@@ -57,7 +57,7 @@ class EventBusHandler {
                 this.caching.registerOnChange(`service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, (value) => {
                     resolve(value);
                 });
-                yield this.queue.publish(action, `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, obj, formService); //publish message to the queue
+                yield this.queue.publish(action, `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, obj, formDomain); //publish message to the queue
             }));
         });
         this.shutDown = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {

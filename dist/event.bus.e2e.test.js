@@ -19,8 +19,8 @@ describe.skip('Spec =>  testing event.bus functionality ', () => {
             "namespace": "t1_local",
             "fields": [{ "type": "string", "name": "message" }]
           }`];
-        yield event_bus_1.EventBus.registerSchemas(null, stringSchema);
-        yield event_bus_1.EventBus.generateServiceSchema(['t1_local.PONG', 't1_local.PING'], __dirname);
+        // await EventBus.registerSchemas(null, stringSchema)
+        // await EventBus.generateServiceSchema(['t1_local.PONG','t1_local.PING'],__dirname)
     }));
     (0, mocha_1.after)(() => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
         yield event_bus_1.EventBus.shutDown();
@@ -32,7 +32,7 @@ describe.skip('Spec =>  testing event.bus functionality ', () => {
                 (0, chai_1.expect)(v.message).to.be.equal('PONG'); //check that PONG received 
             }
         });
-        yield event_bus_1.EventBus.publishAsync('t1_local', EVENT_TO_LISTEN_TO, { message: 'PONG' }); //publish PING message 
+        yield event_bus_1.EventBus.publishAsync('t1_local', { payload: { message: 'PONG' } }, EVENT_TO_LISTEN_TO); //publish PING message 
     }));
     it("should be register to event, publish and get results back", () => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
         yield event_bus_1.EventBus.reactiveAttach({
@@ -42,7 +42,7 @@ describe.skip('Spec =>  testing event.bus functionality ', () => {
                 return { message: "PONG" };
             }
         });
-        const results = yield event_bus_1.EventBus.getAsync('service_a', EVENT_TO_LISTEN_TO, { message: 'PING' }); //demonstrate service B calling service A
+        const results = yield event_bus_1.EventBus.getAsync('service_a', EVENT_TO_LISTEN_TO, { payload: { message: 'PING' } }); //demonstrate service B calling service A
         (0, chai_1.expect)(results.message).to.be.equal("PONG");
     }));
 });
