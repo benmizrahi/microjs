@@ -11,6 +11,9 @@ Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and c
 
 To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/README.md) under the example folder.
 
+#### Design to scale - 
+The main idea this package and any other event-driven architecture should follow is that messages are async by design and each message can be processed exactly-once. another thing to keep in maid is the ordering - when stating to implement this kind of design remember there is no ordering for consuming messages - so the publishing order will not be the order of consuming - especially with multiple replicas handling lot's of events.
+
 
 #### How two-way communication works - simple but powerful:
 
