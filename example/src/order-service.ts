@@ -33,23 +33,3 @@ import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
     new OrderService();
 
 })().catch(console.error)
-
-
-
-
-//EVENT_BUS_DRY
-//REDIS_HOST
-//REDIS_PORT
-//RETRY_DLQ_COUNT
-//KAFKA_SERVICE_NAME
-//KAFKA_BROKER
-//EVENT_BUS_CONNECTION_TIMEOUT
-//EVENT_BUS_REQUEST_TIMEOUT
-//EVENT_BUS_TIME
-//EVENT_BUS_RETRY
-//FROM_BEGINNING
-//KAFKA_GROUP
-//DEFAULT_NUMBER_OF_PARTITIONS
-//SCHEMA_REGISTRY_URL
-
-
