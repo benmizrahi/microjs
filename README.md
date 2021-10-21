@@ -1,4 +1,5 @@
-# MicroJs - EventBus implementation for NodeJs microservices made with :heart_on_fire:
+# MicroJs - ##
+## event Bus implementation for NodeJs microservices made with 	:heart_on_fire: :brain: :computer:
 
 A microservices event bus for async/sync communication between NodeJs services - well tested in production grade handles millions of events per second  - in stream/batch mode.
 ##### dependencies: [KafkaJs](https://github.com/tulios/kafkajs/), [Redis](https://github.com/redis/node-redis/)
@@ -137,7 +138,7 @@ submitted = (message: IEventBusMessage) => {
 
 ```
 
-## Contributing
+## Contributing :handshake:
 
 If you'd like to contribute, check out the  [contributing guide](https://github.com/benmizrahi/microjs/CONTRIBUTING.md).
 
