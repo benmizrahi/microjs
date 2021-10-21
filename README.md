@@ -121,7 +121,7 @@ interface IBusReactiveParams {
 	// the client need to publish messages via the EventBus
 	isBatch?: boolean;
 
-	//Defined in KafkaJs 
+	//Defined in [KafkaJs](https://kafka.js.org/docs/consuming#a-name-options-a-options)
 	consumerParams?:any
 
 	//JSON orAVRO
