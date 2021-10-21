@@ -9,6 +9,13 @@ A microservices event bus for async/sync communication between NodeJs services -
 
 Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, there are two directions that services can communicate - *one-way* OR *two-way* connection, let's explore both of them with examples. all communication directions are *async* non-blocking. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple. To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/README.md) under the example folder.
 
+
+#### How two-way communication works:
+When using the **EventBus.getAsync** method on the event bus we need somehow not only to populate the message into the relevant topic but we need also to get the respond back  and resolve the promise - to do so MicroJs uses Redis for publish-subscribe pattern. here you can see the the event-flow under the hood:
+
+![alt text](https://github.com/benmizrahi/microjs/blob/main/diagram-sync-responed.png)
+
+
 ## Getting Started
 
 Install the package with you're favorite package manager:
