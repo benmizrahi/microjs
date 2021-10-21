@@ -4,7 +4,7 @@ A microservices event bus for async/sync communication between NodeJs services -
 
 ## How it works ?
 
-Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, there are two directions that services can communicate - *one-way* OR *two-way* connection, let's explore both of them with examples. all communication directions are *async* non-blocking. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple. To see an actual working example please see the following README.md under the example folder.
+Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, there are two directions that services can communicate - *one-way* OR *two-way* connection, let's explore both of them with examples. all communication directions are *async* non-blocking. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple. To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/README.md) under the example folder.
 
 ## Getting Started
 
@@ -70,4 +70,76 @@ In this case we need to implement a reactive method that listens to GET events o
 
 `await EventBus.publishAsync('OrderPlaced',[{ payload: { message: 'HelloWorld' } }], 'Order')`
 
+---
+### Make A Service Reactive:
 
+All of the above methods are publishing methods - now let's make the service react to events - for this purpose, MicroJS provides a decorator for method that warps a method and trigger the method when there is a new event coming in on the specific domain and on the specific action. 
+
+``` 
+@ActionReact  - input object interfaces: 
+
+interface IBusReactiveParams {
+
+	// Domain of this action, not mendetory means that we can react to global actions.
+	domain?: string 
+	
+	// The action that this method will be handle.
+	action: string
+	
+	// Should reset the consumer to latest offset in the topic
+	resetToLatest?: boolean;
+	
+	//should reset the consumer to earliest in the topic
+	resetToEarliest?: boolean;
+	
+	//Auto create topic - if needed.
+	autoCreate?: boolean;
+
+	// number of partitions for this topic (default 7)
+	numberOfPartitions?: number
+
+	//nu,ber of replication for this topic (default 3)
+	replicationFactor?: number
+
+	// allow the message to get an array of json message
+	// ** important in this case the message results will not be handled.
+	// the client need to publish messages via the EventBus
+	isBatch?: boolean;
+
+	//Defined in KafkaJs 
+	consumerParams?:any
+
+	//JSON orAVRO
+	//Default message format is
+	messageFormat?: MessageFormat;
+}
+```
+
+
+
+For example the following method wraps the submitted method and binds in to the action: **submitted** on the **orders** domain.
+
+```
+import { EventBus, ActionReact, IEventBusMessage } from  '@microjs/packages'
+
+@ActionReact({ action: 'submitted', domain: 'orders' })
+submitted = (message: IEventBusMessage) => {
+	const { message } = message.payload
+	console.log(message) // only handles the message no return value
+}
+
+@ActionReact({ action: 'get', domain: 'orders' })
+submitted = (message: IEventBusMessage) => {
+	const { message } = message.payload
+	return 'message + get'  // will be the result of the request via asyncGet
+}
+
+```
+
+## Contributing
+
+If you'd like to contribute, check out the  [contributing guide](https://github.com/benmizrahi/microjs/CONTRIBUTING.md).
+
+## License
+
+This repository is licensed under the "MIT" license. See  [LICENSE](https://github.com/benmizrahi/microjs/LICENSE).
