@@ -88,7 +88,7 @@ In this case we need to implement a reactive method that listens to GET events o
 ---
 ### Make A Service Reactive:
 
-All of the above methods are publishing methods - now let's make the service react to events - for this purpose, MicroJS provides a decorator for method that warps a method and trigger the method when there is a new event coming in on the specific domain and on the specific action. 
+All of the above methods are publishing methods - now let's make the service react to events - for this purpose, MicroJS provides a decorator for method that warps a method and trigger the method when there is a new event coming in on the specific domain and on the specific action - this idea behind this decorator is to think about events as we think about HTTP requests - in HTTP server like Express we define a route and bind a message to it - the reaction of the method will be the output of the server in this route - the same goes with MicroJs, by defining a @ActionReactive method we bing the warped method to the action of handling events.
 
 ``` 
 @ActionReact  - input object interfaces: 
@@ -128,9 +128,27 @@ interface IBusReactiveParams {
 	//Default message format is
 	messageFormat?: MessageFormat;
 }
+
+
+
+export interface IEventBusMessage {
+
+  //UUID of this message - alow you to create an idempotent action to resolve duplications and issues. 
+  id: string
+ 
+  //The unique key of the message in the underline system (Kafka == message.key)
+  technicalKey:string;
+ 
+  //The unique offset of the message in the underline system (Kafka == message.offset)
+  technicalOffset:string;
+ 
+  //The partitions that the message comes from in underline system (Kafka == partition)
+  partition:number;
+ 
+  // a generic JSON object holding all the data passed in this particular message you can destruct the message to get the values
+  payload: any
+}
 ```
-
-
 
 For example the following method wraps the submitted method and binds in to the action: **submitted** on the **orders** domain.
 
