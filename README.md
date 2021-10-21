@@ -7,7 +7,7 @@ A micro-services event bus for async/sync communication between NodeJs services 
 
 ## How it works ?
 
-Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, it provides a simple yet powerful abstraction over those tools - instead of implementing the layer of communication in every service - Microjs wraps it for you. with Microjs there are two ways that services can communicate - *one-way* (publisher) OR *two-way* (publish-respond). All communication directions are *async non-blocking*. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple.  
+Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, it provides a simple yet powerful abstraction over those tools - instead of implementing the layer of communication in every service - Microjs wraps it for you. with Microjs there are two ways that services can communicate - *one-way* (publish) OR *two-way* (publish-respond). All communication directions are *async non-blocking*. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple.  
 
 To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/README.md) under the example folder.
 
