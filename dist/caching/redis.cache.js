@@ -18,6 +18,7 @@ class RedisCache {
                 port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
             }
         });
+        this.messages_callbacks = {};
         this.init = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             yield this.sub_redis.connect();
             //@ts-ignore
@@ -49,7 +50,6 @@ class RedisCache {
                 }
             }));
         });
-        this.messages_callbacks = {};
         this.set = (key, value) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             return yield this.pub_redis.SET(key, value.toString());
         });

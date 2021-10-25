@@ -4,19 +4,20 @@ import { ICaching } from './caching.factory';
 
 export class RedisCache implements ICaching {
 
-  private readonly pub_redis = createClient({
+  readonly pub_redis = createClient({
     socket: {
       host: (process.env.REDIS_HOST || 'localhost'),
       port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
     },
   })
 
-  private readonly sub_redis = createClient({
+  readonly sub_redis = createClient({
     socket: {
       host: (process.env.REDIS_HOST || 'localhost'),
       port: (process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379),
     }
   })
+  messages_callbacks = {}
 
   init = async () => {
     
@@ -54,8 +55,6 @@ export class RedisCache implements ICaching {
     })
   }
 
-  messages_callbacks = {}
-
   set = async (key, value) => {
     return await this.pub_redis.SET(key, value.toString())
   }
@@ -82,6 +81,7 @@ export class RedisCache implements ICaching {
     await promisify(this.sub_redis.quit).bind(this.sub_redis)()
     await promisify(this.pub_redis.quit).bind(this.pub_redis)()
   }
+
   isHealth = async () => {
     return this.pub_redis.isOpen && this.sub_redis.isOpen;
   }

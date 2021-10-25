@@ -1,9 +1,9 @@
 import { ICaching } from './caching.factory';
 export declare class RedisCache implements ICaching {
-    private readonly pub_redis;
-    private readonly sub_redis;
-    init: () => Promise<void>;
+    readonly pub_redis: import("redis/dist/lib/client").RedisClientType<{}, {}>;
+    readonly sub_redis: import("redis/dist/lib/client").RedisClientType<{}, {}>;
     messages_callbacks: {};
+    init: () => Promise<void>;
     set: (key: any, value: any) => Promise<string | null>;
     publish: (key: any, value: any) => Promise<number>;
     get: (key: any) => Promise<string | null>;
