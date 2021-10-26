@@ -61,15 +61,22 @@ class EventBusHandler {
     return await this.queue.bulkPublish(action, formattedMessages, toDomain)
   }
 
-  getAsync = async (formDomain, action: string, obj: { payload: any }): Promise<any> => {
+  getAsync = async (formDomain, action: string, obj: { payload: any },timeout=30000): Promise<any> => {
     if (this.dryRun) return
     return new Promise(async (resolve, reject) => {
       const key = this.uuidv4(); //message key;
-      await this.caching.set(`service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, "-1") //set empty value and wait for response;
-      this.caching.registerOnChange(`service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, (value) => { //mark to be deleted!
+      const messageKey = `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`
+      await this.caching.set(messageKey, "-1") //set empty value and wait for response;
+      this.caching.registerOnChange(messageKey, (value) => { //mark to be deleted!
         resolve(value);
       })
-      await this.queue.publish(action, `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, obj, formDomain); //publish message to the queue
+      await this.queue.publish(action, messageKey, obj, formDomain); //publish message to the queue
+      setTimeout(()=>{
+        const errorMessage = `request timeout ${timeout} exceeded`
+        this.caching.unRegisterOnChange(messageKey);
+        this.caching.delete(messageKey);
+        reject(new Error(errorMessage))
+      },timeout)
     })
   }
 

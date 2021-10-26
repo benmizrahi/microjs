@@ -160,8 +160,8 @@ export class KafkaQueue implements IQueue {
   }
 
   private messageHandler = async ({ topic, partition, message }: { topic: string, partition: number, message: KafkaMessage }) => {
+    const messageRetryKey = `bus:retry:partition:${partition}:offset:${message.offset}`
     try {
-      // console.debug(`${topic} revived message , offset: ${message.offset}, key: ${message.key}`)
       const { cb } = this.listenTopicHandlers[topic]
       if (cb) {
         //@ts-ignore
@@ -178,19 +178,19 @@ export class KafkaQueue implements IQueue {
         console.warn(`consumed messages from ${topic} handler is not implemented, offset: ${message.offset}, key: ${message.key}`)
       }
       //delete if successes retry
-      await this.caching.delete(message.offset)
+      await this.caching.delete(messageRetryKey)
     }
     catch (err) {
       console.error(`EventBus consumer.eachMessage error! ${err}`)
-      const retryPointer = await this.caching.get(message.offset)
+      const retryPointer = await this.caching.get(messageRetryKey)
       if (retryPointer && +retryPointer > this.DLQ_COUNT_RETRY) {
-        await this.caching.delete(message.offset)
-        await this.producer.send({ topic: `${topic}_dlq`, messages: [{ key: message.key, value: Buffer.from(JSON.stringify(message)) }] })
+        await this.publish(`${topic}_dlq`,message.key,message)
+        await this.caching.delete(messageRetryKey)
         console.warn(`message retry moved to ${topic}_dlq due to error: ${err}!`)
       } else {
-        this.caching.set(message.offset, (retryPointer ? ((+retryPointer) + 1) : 1))
+        this.caching.set(messageRetryKey, (retryPointer ? ((+retryPointer) + 1) : 1))
+        throw err;
       }
-      throw err;
     }
   }
 

@@ -4,7 +4,8 @@ export interface ICaching {
   set(key,value)
   get(key):Promise<any>
   delete(key):Promise<any>
-  registerOnChange(key,cb):Promise<boolean>
+  registerOnChange(key,cb):boolean
+  unRegisterOnChange(key):boolean
   shutdown();
   init():Promise<void>;
   publish(key,value):Promise<any>

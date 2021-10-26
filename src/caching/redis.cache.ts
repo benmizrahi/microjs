@@ -50,7 +50,7 @@ export class RedisCache implements ICaching {
       }
       catch (err) {
         delete this.messages_callbacks[key];
-        console.error(`Critical Error! with redis!`)
+        console.error(`Critical Error! with redis - ${err.message}`)
       }
     })
   }
@@ -71,9 +71,14 @@ export class RedisCache implements ICaching {
     return await this.pub_redis.del(key)
   }
 
-  registerOnChange = async (key, cb_handler) => {
+  registerOnChange = (key, cb_handler) => {
     console.debug(`subscribing to key ${key}`)
     this.messages_callbacks[key] = cb_handler
+    return true;
+  }
+
+  unRegisterOnChange = (key) => {
+    delete this.messages_callbacks[key];
     return true;
   }
 
