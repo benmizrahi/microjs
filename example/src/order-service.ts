@@ -26,7 +26,7 @@ import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
         @ActionReact({ action: 'get', domain: 'orders' })
         get = (message: IEventBusMessage) => {
             const { filters }: { filters: { userId } } = message.payload;
-            return this.inMemoryCache[filters.userId];
+            return this.inMemoryCache[filters.userId] || [];
         }
 
         @ActionReact({ action: 'get_error', domain: 'orders' })
