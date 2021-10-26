@@ -144,7 +144,7 @@ class KafkaQueue {
                     const res = yield cb(payload);
                     const shouldPublishResult = yield this.caching.get(`${message.key.toString()}`);
                     if (shouldPublishResult) { //check if I should publish result
-                        yield this.caching.publish(`${message.key.toString()}`, JSON.stringify(res));
+                        yield this.caching.publish(`${message.key.toString()}`, res ? JSON.stringify(res) : JSON.stringify({}));
                     }
                 }
                 else {
