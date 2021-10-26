@@ -47,10 +47,10 @@ export class RedisCache implements ICaching {
         if (result.err) {
           this.messages_callbacks[key](null, result.err)
         } else {
-          this.messages_callbacks[key](result,null) //resolve the promise!
-          delete this.messages_callbacks[key];
-          this.sub_redis.unsubscribe(key); //remove the subscriber
+          this.messages_callbacks[key](result, null) //resolve the promise!
         }
+        delete this.messages_callbacks[key];
+        this.sub_redis.unsubscribe(key); //remove the subscriber
       }
       catch (err) {
         delete this.messages_callbacks[key];
