@@ -52,6 +52,7 @@ class EventBusHandler {
       const messageKey = `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`
       await this.caching.set(messageKey, "-1") //set empty value and wait for response;
       this.caching.registerOnChange(messageKey, (value,error) => { //mark to be deleted!
+        this.caching.delete(messageKey);
         if(error) reject(new Error(error))
         resolve(value);
       })
