@@ -163,7 +163,7 @@ class KafkaQueue {
                     const isStillNeedToPublishError = yield this.caching.get(`${message.key.toString()}`);
                     if (isStillNeedToPublishError) {
                         //will publish error to the subscriber to pop the message up to the client service
-                        yield this.caching.publish(`${message.key.toString()}`, JSON.stringify({ err }));
+                        yield this.caching.publish(`${message.key.toString()}`, JSON.stringify({ err: err.message }));
                     }
                     yield this.publish(`${topic}_dlq`, message.key, message); //publish to dlq
                     yield this.caching.delete(messageRetryKey); //delete the unique key

@@ -28,6 +28,14 @@ import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
             const { filters }: { filters: { userId } } = message.payload;
             return this.inMemoryCache[filters.userId];
         }
+
+        @ActionReact({ action: 'get_error', domain: 'orders' })
+        error = (message: IEventBusMessage) => {
+            const { filters }: { filters: { userId } } = message.payload;
+            throw new Error('you should see this error in the client')
+        }
+
+
     }
 
     new OrderService();
