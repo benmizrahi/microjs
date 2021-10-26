@@ -4,28 +4,12 @@ exports.EventBus = void 0;
 const tslib_1 = require("tslib");
 const caching_factory_1 = require("./caching/caching.factory");
 const queuing_factory_1 = require("./queuing/queuing.factory");
-const fs = require("fs");
-const util_1 = require("util");
 class EventBusHandler {
     constructor() {
         this.dryRun = false;
         this.init = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             yield this.caching.init();
             return this;
-        });
-        this.registerSchemas = (filePath, stringSchemas) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            if (filePath) {
-                const readFile = (0, util_1.promisify)(fs.readFile);
-                const file = yield readFile(filePath);
-                stringSchemas = JSON.parse(file.toString()).map((item) => JSON.stringify(item));
-            }
-            //@ts-ignore
-            yield this.queue.registerSchema(stringSchemas);
-        });
-        this.generateServiceSchema = (services, path) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            const result = yield this.queue.generateSchemas(services);
-            const writeFile = (0, util_1.promisify)(fs.writeFile);
-            yield writeFile('external.services.json', JSON.stringify(result));
         });
         this.reactiveAttach = (params) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             if (this.dryRun)
@@ -48,16 +32,25 @@ class EventBusHandler {
             });
             return yield this.queue.bulkPublish(action, formattedMessages, toDomain);
         });
-        this.getAsync = (formDomain, action, obj) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        this.getAsync = (formDomain, action, obj, timeout = 30000) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             if (this.dryRun)
                 return;
             return new Promise((resolve, reject) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                 const key = this.uuidv4(); //message key;
-                yield this.caching.set(`service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, "-1"); //set empty value and wait for response;
-                this.caching.registerOnChange(`service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, (value) => {
+                const messageKey = `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`;
+                yield this.caching.set(messageKey, "-1"); //set empty value and wait for response;
+                this.caching.registerOnChange(messageKey, (value, error) => {
+                    if (error)
+                        reject(new Error(error));
                     resolve(value);
                 });
-                yield this.queue.publish(action, `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`, obj, formDomain); //publish message to the queue
+                yield this.queue.publish(action, messageKey, obj, formDomain); //publish message to the queue
+                setTimeout(() => {
+                    const errorMessage = `request timeout ${timeout} exceeded`;
+                    this.caching.unRegisterOnChange(messageKey);
+                    this.caching.delete(messageKey);
+                    reject(new Error(errorMessage));
+                }, timeout);
             }));
         });
         this.shutDown = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {

@@ -20,7 +20,7 @@ export class RedisCache implements ICaching {
   messages_callbacks = {}
 
   init = async () => {
-    
+
     await this.sub_redis.connect();
     //@ts-ignore
     this.sub_redis.on('error', (err) => console.log('Redis Client Error', err));
@@ -38,19 +38,23 @@ export class RedisCache implements ICaching {
 
     //@ts-ignore
     await this.pub_redis.select(0);
-    // this.sub_redis.config("SET", "notify-keyspace-events", "KEA");
     this.sub_redis.pSubscribe(`service:${process.env.KAFKA_SERVICE_NAME}:key*`, async (value, key) => {
       try {
         if (!this.messages_callbacks[key]) {
           return;
         }
-        this.messages_callbacks[key](JSON.parse(value)) //resolve the promise!
-        delete this.messages_callbacks[key];
-        this.sub_redis.unsubscribe(key); //remove the subscriber
+        const result = JSON.parse(value)
+        if (result.err) {
+          this.messages_callbacks[key](null, result.err)
+        } else {
+          this.messages_callbacks[key](result,null) //resolve the promise!
+          delete this.messages_callbacks[key];
+          this.sub_redis.unsubscribe(key); //remove the subscriber
+        }
       }
       catch (err) {
         delete this.messages_callbacks[key];
-        console.error(`Critical Error! with redis - ${err.message}`)
+        console.error(`Critical Error! with redis - ${err}`)
       }
     })
   }

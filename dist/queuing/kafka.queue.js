@@ -136,8 +136,8 @@ class KafkaQueue {
             yield heartbeat();
         });
         this.messageHandler = ({ topic, partition, message }) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            const messageRetryKey = `bus:retry:partition:${partition}:offset:${message.offset}`;
             try {
-                // console.debug(`${topic} revived message , offset: ${message.offset}, key: ${message.key}`)
                 const { cb } = this.listenTopicHandlers[topic];
                 if (cb) {
                     //@ts-ignore
@@ -154,20 +154,25 @@ class KafkaQueue {
                     console.warn(`consumed messages from ${topic} handler is not implemented, offset: ${message.offset}, key: ${message.key}`);
                 }
                 //delete if successes retry
-                yield this.caching.delete(message.offset);
+                yield this.caching.delete(messageRetryKey);
             }
             catch (err) {
                 console.error(`EventBus consumer.eachMessage error! ${err}`);
-                const retryPointer = yield this.caching.get(message.offset);
+                const retryPointer = yield this.caching.get(messageRetryKey);
                 if (retryPointer && +retryPointer > this.DLQ_COUNT_RETRY) {
-                    yield this.caching.delete(message.offset);
-                    yield this.producer.send({ topic: `${topic}_dlq`, messages: [{ key: message.key, value: Buffer.from(JSON.stringify(message)) }] });
+                    const isStillNeedToPublishError = yield this.caching.get(`${message.key.toString()}`);
+                    if (isStillNeedToPublishError) {
+                        //will publish error to the subscriber to pop the message up to the client service
+                        yield this.caching.publish(`${message.key.toString()}`, JSON.stringify({ err }));
+                    }
+                    yield this.publish(`${topic}_dlq`, message.key, message); //publish to dlq
+                    yield this.caching.delete(messageRetryKey); //delete the unique key
                     console.warn(`message retry moved to ${topic}_dlq due to error: ${err}!`);
                 }
                 else {
-                    this.caching.set(message.offset, (retryPointer ? ((+retryPointer) + 1) : 1));
+                    this.caching.set(messageRetryKey, (retryPointer ? ((+retryPointer) + 1) : 1));
+                    throw err;
                 }
-                throw err;
             }
         });
         this.isHealth = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {

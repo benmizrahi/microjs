@@ -31,8 +31,8 @@ export class KafkaQueue implements IQueue {
   private fromBeginningConsumer = process.env.FROM_BEGINNING == "1" ? true : false
   private producer = this.kafka.producer();
 
-  constructor(private readonly caching: ICaching) { 
-    if(!process.env.KAFKA_GROUP) throw 'KAFKA_GROUP is mandatory parameter'
+  constructor(private readonly caching: ICaching) {
+    if (!process.env.KAFKA_GROUP) throw 'KAFKA_GROUP is mandatory parameter'
   }
 
   registerSchema = async (schemas: string[]) => {
@@ -184,8 +184,13 @@ export class KafkaQueue implements IQueue {
       console.error(`EventBus consumer.eachMessage error! ${err}`)
       const retryPointer = await this.caching.get(messageRetryKey)
       if (retryPointer && +retryPointer > this.DLQ_COUNT_RETRY) {
-        await this.publish(`${topic}_dlq`,message.key,message)
-        await this.caching.delete(messageRetryKey)
+        const isStillNeedToPublishError = await this.caching.get(`${message.key.toString()}`)
+        if (isStillNeedToPublishError) {
+          //will publish error to the subscriber to pop the message up to the client service
+          await this.caching.publish(`${message.key.toString()}`, JSON.stringify({ err }));
+        }
+        await this.publish(`${topic}_dlq`, message.key, message) //publish to dlq
+        await this.caching.delete(messageRetryKey) //delete the unique key
         console.warn(`message retry moved to ${topic}_dlq due to error: ${err}!`)
       } else {
         this.caching.set(messageRetryKey, (retryPointer ? ((+retryPointer) + 1) : 1))

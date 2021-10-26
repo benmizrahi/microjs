@@ -5,8 +5,6 @@ declare class EventBusHandler {
     private queue;
     constructor();
     init: () => Promise<this>;
-    private registerSchemas;
-    private generateServiceSchema;
     reactiveAttach: (params: IBusReactiveParams) => Promise<void>;
     publishAsync: (action: string, obj: {
         payload: any;
@@ -16,7 +14,7 @@ declare class EventBusHandler {
     }[], toDomain?: any) => Promise<boolean>;
     getAsync: (formDomain: any, action: string, obj: {
         payload: any;
-    }) => Promise<any>;
+    }, timeout?: number) => Promise<any>;
     shutDown: () => Promise<void>;
     private uuidv4;
     healthCheck: () => Promise<any>;

@@ -34,19 +34,24 @@ class RedisCache {
             this.pub_redis.on('connect', () => console.info('INFO:REDIS:Connected!'));
             //@ts-ignore
             yield this.pub_redis.select(0);
-            // this.sub_redis.config("SET", "notify-keyspace-events", "KEA");
             this.sub_redis.pSubscribe(`service:${process.env.KAFKA_SERVICE_NAME}:key*`, (value, key) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                 try {
                     if (!this.messages_callbacks[key]) {
                         return;
                     }
-                    this.messages_callbacks[key](JSON.parse(value)); //resolve the promise!
-                    delete this.messages_callbacks[key];
-                    this.sub_redis.unsubscribe(key); //remove the subscriber
+                    const result = JSON.parse(value);
+                    if (result.err) {
+                        this.messages_callbacks[key](null, result.err);
+                    }
+                    else {
+                        this.messages_callbacks[key](result, null); //resolve the promise!
+                        delete this.messages_callbacks[key];
+                        this.sub_redis.unsubscribe(key); //remove the subscriber
+                    }
                 }
                 catch (err) {
                     delete this.messages_callbacks[key];
-                    console.error(`Critical Error! with redis!`);
+                    console.error(`Critical Error! with redis - ${err}`);
                 }
             }));
         });
@@ -62,11 +67,15 @@ class RedisCache {
         this.delete = (key) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             return yield this.pub_redis.del(key);
         });
-        this.registerOnChange = (key, cb_handler) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        this.registerOnChange = (key, cb_handler) => {
             console.debug(`subscribing to key ${key}`);
             this.messages_callbacks[key] = cb_handler;
             return true;
-        });
+        };
+        this.unRegisterOnChange = (key) => {
+            delete this.messages_callbacks[key];
+            return true;
+        };
         this.isHealth = () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             return this.pub_redis.isOpen && this.sub_redis.isOpen;
         });

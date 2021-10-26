@@ -8,7 +8,8 @@ export declare class RedisCache implements ICaching {
     publish: (key: any, value: any) => Promise<number>;
     get: (key: any) => Promise<string | null>;
     delete: (key: any) => Promise<number>;
-    registerOnChange: (key: any, cb_handler: any) => Promise<boolean>;
+    registerOnChange: (key: any, cb_handler: any) => boolean;
+    unRegisterOnChange: (key: any) => boolean;
     shutdown(): Promise<void>;
     isHealth: () => Promise<boolean>;
 }

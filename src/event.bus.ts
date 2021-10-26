@@ -24,22 +24,6 @@ class EventBusHandler {
     return this;
   }
 
-  private registerSchemas = async (filePath, stringSchemas?: string[]) => {
-    if (filePath) {
-      const readFile = promisify(fs.readFile);
-      const file = await readFile(filePath)
-      stringSchemas = JSON.parse(file.toString()).map((item) => JSON.stringify(item));
-    }
-    //@ts-ignore
-    await this.queue.registerSchema(stringSchemas);
-  }
-
-  private  generateServiceSchema = async (services, path) => {
-    const result = await this.queue.generateSchemas(services);
-    const writeFile = promisify(fs.writeFile);
-    await writeFile('external.services.json', JSON.stringify(result))
-  }
-
   reactiveAttach = async (params: IBusReactiveParams) => {
     if (this.dryRun) return
     await this.queue.attach(params)
@@ -67,7 +51,8 @@ class EventBusHandler {
       const key = this.uuidv4(); //message key;
       const messageKey = `service:${process.env.KAFKA_SERVICE_NAME}:key:${key}`
       await this.caching.set(messageKey, "-1") //set empty value and wait for response;
-      this.caching.registerOnChange(messageKey, (value) => { //mark to be deleted!
+      this.caching.registerOnChange(messageKey, (value,error) => { //mark to be deleted!
+        if(error) reject(new Error(error))
         resolve(value);
       })
       await this.queue.publish(action, messageKey, obj, formDomain); //publish message to the queue
