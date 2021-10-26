@@ -129,11 +129,7 @@ class KafkaQueue {
                 payload.partition = partition;
                 return payload;
             });
-            const res = yield cb(jsonBatch, heartbeat, isRunning, isStale, resolveOffset); //passed the batch to function
-            // console.debug(`${topic} processed message fine - committing the message batch, function results: ${res} `)
-            //@ts-ignore
-            resolveOffset(messages.shift().offset);
-            yield heartbeat();
+            yield cb(jsonBatch, heartbeat, isRunning, isStale, resolveOffset); //passed the batch to function
         });
         this.messageHandler = ({ topic, partition, message }) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             const messageRetryKey = `bus:retry:partition:${partition}:offset:${message.offset}`;
@@ -146,7 +142,8 @@ class KafkaQueue {
                     payload.technicalOffset = message.offset;
                     payload.partition = partition;
                     const res = yield cb(payload);
-                    if (res) {
+                    const shouldPublishResult = yield this.caching.get(`${message.key.toString()}`);
+                    if (shouldPublishResult) { //check if I should publish result
                         yield this.caching.publish(`${message.key.toString()}`, JSON.stringify(res));
                     }
                 }

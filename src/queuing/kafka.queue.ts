@@ -152,11 +152,7 @@ export class KafkaQueue implements IQueue {
       payload.partition = partition;
       return payload;
     })
-    const res = await cb(jsonBatch, heartbeat, isRunning, isStale, resolveOffset) //passed the batch to function
-    // console.debug(`${topic} processed message fine - committing the message batch, function results: ${res} `)
-    //@ts-ignore
-    resolveOffset(messages.shift().offset)
-    await heartbeat()
+    await cb(jsonBatch, heartbeat, isRunning, isStale, resolveOffset) //passed the batch to function
   }
 
   private messageHandler = async ({ topic, partition, message }: { topic: string, partition: number, message: KafkaMessage }) => {
@@ -170,7 +166,8 @@ export class KafkaQueue implements IQueue {
         payload.technicalOffset = message.offset;
         payload.partition = partition;
         const res = await cb(payload)
-        if (res) {
+        const shouldPublishResult = await this.caching.get(`${message.key.toString()}`)
+        if (shouldPublishResult) {//check if I should publish result
           await this.caching.publish(`${message.key.toString()}`, JSON.stringify(res));
         }
       }
