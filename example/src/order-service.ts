@@ -17,6 +17,7 @@ import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
             if (!this.inMemoryCache[userId]) this.inMemoryCache[userId] = []
             this.inMemoryCache[userId].push({ name, date })
         }
+        
         /**
          * Sync operation that returns the orders per filter
          * The message will produce a results to the queue and consume by the client

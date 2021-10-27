@@ -97,16 +97,16 @@ interface IBusReactiveParams {
 
 	// Domain of this action, not mendetory means that we can react to global actions.
 	domain?: string 
-	
+
 	// The action that this method will be handle.
 	action: string
-	
+
 	// Should reset the consumer to latest offset in the topic
 	resetToLatest?: boolean;
-	
+
 	//should reset the consumer to earliest in the topic
 	resetToEarliest?: boolean;
-	
+
 	//Auto create topic - if needed.
 	autoCreate?: boolean;
 
