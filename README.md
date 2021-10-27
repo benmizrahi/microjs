@@ -1,4 +1,4 @@
-# MicroJs  :electric_plug: :desktop_computer:
+# reactivejs  :electric_plug: :desktop_computer:
 
 ### Event Bus implementation for NodeJs microservices made with :heart_on_fire: :brain: :computer:
 
@@ -7,9 +7,9 @@ A micro-services event bus for async/sync communication between NodeJs services 
 
 ## How it works ?
 
-Microjs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, it provides a simple yet powerful abstraction over those tools - instead of implementing the layer of communication in every service - Microjs wraps it for you. with Microjs there are two ways that services can communicate - *one-way* (publish) OR *two-way* (publish-respond). All communication directions are *async non-blocking*. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple.  
+reactivejs uses **Redis** and **Kafka** as an infrastructure to pass messages and communicate between services, it provides a simple yet powerful abstraction over those tools - instead of implementing the layer of communication in every service - reactivejs wraps it for you. with reactivejs there are two ways that services can communicate - *one-way* (publish) OR *two-way* (publish-respond). All communication directions are *async non-blocking*. The package allows you to take advantage of **domain-driven-design** while keeping the source code clean and simple.  
 
-To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/microjs/blob/main/example/) under the example folder.
+To see an actual working example please see the following  [README.md](https://github.com/benmizrahi/reactivejs/blob/main/example/) under the example folder.
 
 #### Design to scale
 The main idea this package and any other event-driven architecture should follow is that messages are async by design and each message can be processed exactly-once. another thing to keep in maid is the ordering - when stating to implement this kind of design remember there is no ordering for consuming messages - so the publishing order will not be the order of consuming - especially with multiple replicas handling lot's of events.
@@ -17,17 +17,17 @@ The main idea this package and any other event-driven architecture should follow
 
 #### How two-way communication works - simple but powerful:
 
-When using the **EventBus.getAsync** method on the event bus we need somehow not only to populate the message into the relevant topic but we need also to get the respond back  and resolve the promise - to do so MicroJs uses Redis for publish-subscribe pattern. here you can see the the event-flow under the hood:
+When using the **EventBus.getAsync** method on the event bus we need somehow not only to populate the message into the relevant topic but we need also to get the respond back  and resolve the promise - to do so reactivejs uses Redis for publish-subscribe pattern. here you can see the the event-flow under the hood:
 
-![alt text](https://github.com/benmizrahi/microjs/blob/main/diagram-sync-responed.png)
+![alt text](https://github.com/benmizrahi/reactivejs/blob/main/diagram-sync-responed.png)
 
 ## Getting Started
 
 Install the package with you're favorite package manager:
 ```
-npm install benmizrahi/microjs 
+npm install benmizrahi/reactivejs 
 OR
-yarn add benmizrahi/microjs
+yarn add benmizrahi/reactivejs
 ```
 
 After having the package installed under you're project - you should define some environment variables to tell the events bus how to behave in this service - here is a list of environment variables need to be defined:
@@ -48,7 +48,7 @@ After having the package installed under you're project - you should define some
 
 After having all mandatory environment variables defined - we can start using the package interface and communicate with the EventBus. To init the bus and start all communications via consumer/producers and Redis write the following action on you're index file to init the bus:
 ```
-import { EventBus } from  '@microjs/packages'
+import { EventBus } from  '@reactivejs/packages'
 await EventBus.init()
 ```
 
@@ -88,7 +88,7 @@ In this case we need to implement a reactive method that listens to GET events o
 ---
 ### Make A Service Reactive:
 
-All of the above methods are publishing methods - now let's make the service react to events - for this purpose, MicroJS provides a decorator for method that warps a method and trigger the method when there is a new event coming in on the specific domain and on the specific action - this idea behind this decorator is to think about events as we think about HTTP requests - in HTTP server like Express we define a route and bind a message to it - the reaction of the method will be the output of the server in this route - the same goes with MicroJs, by defining a @ActionReactive method we bing the warped method to the action of handling events.
+All of the above methods are publishing methods - now let's make the service react to events - for this purpose, reactivejs provides a decorator for method that warps a method and trigger the method when there is a new event coming in on the specific domain and on the specific action - this idea behind this decorator is to think about events as we think about HTTP requests - in HTTP server like Express we define a route and bind a message to it - the reaction of the method will be the output of the server in this route - the same goes with reactivejs, by defining a @ActionReactive method we bing the warped method to the action of handling events.
 
 ``` 
 @ActionReact  - input object interfaces: 
@@ -164,7 +164,7 @@ resolveOffset() - will resolve the message in Kafka for this consumer group, exe
 For example the following method wraps the submitted method and binds in to the action: **submitted** on the **orders** domain.
 
 ```
-import { EventBus, ActionReact, IEventBusMessage } from  '@microjs/packages'
+import { EventBus, ActionReact, IEventBusMessage } from  '@reactivejs/packages'
 
 //single action per message in the topic
 @ActionReact({ action: 'submitted', domain: 'orders' })
@@ -193,9 +193,9 @@ submitted = (message: IEventBusMessage) => {
 
 ## Contributing :handshake:
 
-If you'd like to contribute, check out the  [contributing guide](https://github.com/benmizrahi/microjs/CONTRIBUTING.md).
+If you'd like to contribute, check out the  [contributing guide](https://github.com/benmizrahi/reactivejs/CONTRIBUTING.md).
 
 
 ## License
 
-This repository is licensed under the " Apache-2.0 License". See  [LICENSE](https://github.com/benmizrahi/microjs/LICENSE).
+This repository is licensed under the " Apache-2.0 License". See  [LICENSE](https://github.com/benmizrahi/reactivejs/LICENSE).

@@ -1,4 +1,4 @@
-import { EventBus } from '@microjs/packages'
+import { EventBus } from '../../dist/index'
 import * as readline from 'readline'
 import { promisify } from 'util'
 (async () => {

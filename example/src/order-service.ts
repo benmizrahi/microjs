@@ -1,4 +1,4 @@
-import { EventBus, ActionReact, IEventBusMessage } from '@microjs/packages'
+import { EventBus, ActionReact, IEventBusMessage } from '../../dist/index'
 (async () => {
     //init the event bus (connection to redis/kafka)
     await EventBus.init()
