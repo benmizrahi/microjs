@@ -1,4 +1,4 @@
-# reactivejs  :electric_plug: :desktop_computer:
+# @reactivejs  :electric_plug: :desktop_computer:
 
 ### Event Bus implementation for NodeJs microservices made with :heart_on_fire: :brain: :computer:
 
